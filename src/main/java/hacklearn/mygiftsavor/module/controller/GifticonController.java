@@ -1,7 +1,6 @@
 package hacklearn.mygiftsavor.module.controller;
 
 import hacklearn.mygiftsavor.module.model.domain.User;
-import hacklearn.mygiftsavor.module.model.dto.GifticonDtos;
 import hacklearn.mygiftsavor.module.service.GifticonService;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -17,7 +16,8 @@ import static hacklearn.mygiftsavor.module.model.dto.GifticonDtos.*;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestController("gifticon")
+@RestController
+@RequestMapping("gifticon")
 public class GifticonController {
 
     private final GifticonService gifticonService;
