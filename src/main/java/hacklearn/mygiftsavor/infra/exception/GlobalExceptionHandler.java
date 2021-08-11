@@ -14,7 +14,9 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler({
             NoSuchDataException.class,
-            DuplicateException.class})
+            DuplicateException.class,
+            S3Exception.class,
+            AccessDeniedException.class})
     public ResponseEntity<?> handleRuntimeExceptions(final CustomRuntimeException e) {
         return ResponseEntity.badRequest().body(errorMsg(e.getName(), e.getMessage()));
     }
