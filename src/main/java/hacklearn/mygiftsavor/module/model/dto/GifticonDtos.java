@@ -33,4 +33,17 @@ public class GifticonDtos {
         @DateTimeFormat(pattern = "yyyy-MM-dd")
         private LocalDate expirationDate;
     }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class GifticonResDto {
+
+        private Long id;
+        private String img;
+        private LocalDate expirationDate;
+        private String memo;
+        private boolean isUsed;
+    }
 }
