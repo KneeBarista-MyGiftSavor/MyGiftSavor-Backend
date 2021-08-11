@@ -15,7 +15,7 @@ import static hacklearn.mygiftsavor.module.model.dto.UserDtos.*;
 
 @Slf4j
 @RequiredArgsConstructor
-@RestController
+@RestController("user")
 public class UserController {
 
     private final UserService userService;
@@ -27,7 +27,7 @@ public class UserController {
      * @param originalUserDto
      * @return ResponseEntity
      */
-    @PostMapping("/user/sign-up")
+    @PostMapping("/sign-up")
     public ResponseEntity<?> signUp(@Valid @RequestBody OriginalUserDto originalUserDto) {
         log.info("[Request] sign-up");
         userService.signUp(originalUserDto);
@@ -41,7 +41,7 @@ public class UserController {
      * @param originalUserDto
      * @return ResponseEntity
      */
-    @PostMapping("/user/sign-in")
+    @PostMapping("/sign-in")
     public ResponseEntity<?> signIn(@Valid @RequestBody OriginalUserDto originalUserDto) {
         log.info("[Request] sign-in " + originalUserDto.getEmail());
         return new ResponseEntity<>(userService.signIn(originalUserDto), HttpStatus.OK);
@@ -54,7 +54,7 @@ public class UserController {
      * @param githubUserDto
      * @return ResponseEntity
      */
-    @PostMapping("/user/sign-in/github")
+    @PostMapping("/sign-in/github")
     public ResponseEntity<?> singInGithub(@Valid @RequestBody GithubUserDto githubUserDto) {
         log.info("[Request] sign-in with github " + githubUserDto.getUserDetails());
         return new ResponseEntity<>(userService.signInGithub(githubUserDto), HttpStatus.OK);
