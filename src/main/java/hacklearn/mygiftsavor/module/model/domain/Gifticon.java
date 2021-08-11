@@ -42,4 +42,12 @@ public class Gifticon {
 
     @NotNull
     private boolean isUsed;
+
+    public void updateStatus() {
+        this.isUsed = true;
+    }
+
+    public void updateExpirationDate(LocalDate expirationDate) {
+        this.expirationDate = expirationDate;
+    }
 }
