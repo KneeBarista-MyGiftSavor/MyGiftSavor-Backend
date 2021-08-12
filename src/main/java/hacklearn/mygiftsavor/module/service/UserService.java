@@ -1,6 +1,7 @@
 package hacklearn.mygiftsavor.module.service;
 
 import hacklearn.mygiftsavor.infra.exception.DuplicateException;
+import hacklearn.mygiftsavor.infra.exception.InvalidReqBodyException;
 import hacklearn.mygiftsavor.infra.exception.NoSuchDataException;
 import hacklearn.mygiftsavor.infra.jwt.JwtTokenProvider;
 import hacklearn.mygiftsavor.module.model.domain.User;
@@ -65,6 +66,8 @@ public class UserService {
      * @return JwtDto
      */
     public JwtDto signInGithub(GithubUserDto githubUserDto) {
+        if(!githubUserDto.getIdentityProvider().equalsIgnoreCase("GITHUB"))
+            throw new InvalidReqBodyException("IdentityProvider must be github");
         String newUserDetails = githubUserDto.getUserDetails() + "-g";
         User user = userRepository.findByEmail(newUserDetails)
                 .orElseGet(() -> userRepository.save(buildGithubUser(newUserDetails))); //최초 로그인이라면 회원정보 삽입
