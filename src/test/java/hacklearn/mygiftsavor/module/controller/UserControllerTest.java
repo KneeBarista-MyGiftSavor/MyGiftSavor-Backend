@@ -36,7 +36,7 @@ class UserControllerTest {
     @Test
     @DisplayName("User Sign-Up | Success")
     void signUpSuccess() throws Exception {
-        OriginalUserDto originalUserDto = getOriginalUserDto();
+        OriginalUserDto originalUserDto = getOriginalUserDto("1234");
         String jsonString = objectMapper.writeValueAsString(originalUserDto);
         mockMvc.perform(post("/user/sign-up")
                 .contentType(MediaType.APPLICATION_JSON)
@@ -47,7 +47,7 @@ class UserControllerTest {
     @Test
     @DisplayName("User Sign-Up | Fail : Duplicate User")
     void signUpFailDuplicate() throws Exception {
-        OriginalUserDto originalUserDto = getOriginalUserDto();
+        OriginalUserDto originalUserDto = getOriginalUserDto("1234");
         userService.signUp(originalUserDto);
         String jsonString = objectMapper.writeValueAsString(originalUserDto);
 
@@ -62,20 +62,60 @@ class UserControllerTest {
                 .andExpect(content().string(response));
     }
 
-    private OriginalUserDto getOriginalUserDto() {
-        return OriginalUserDto.builder()
-                .email("newUser@new.com")
-                .password("1234")
-                .build();
+    @Test
+    @DisplayName("User Sign-In | Success")
+    void signInSuccess() throws Exception {
+        OriginalUserDto originalUserDto = getOriginalUserDto("1234");
+        userService.signUp(originalUserDto);
+        String jsonString = objectMapper.writeValueAsString(originalUserDto);
+
+        mockMvc.perform(post("/user/sign-in")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonString))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("User Sign-In | Fail : Wrong Email")
+    void signInFailEmail() throws Exception {
+        OriginalUserDto originalUserDto = getOriginalUserDto("1234");
+        String jsonString = objectMapper.writeValueAsString(originalUserDto);
+
+        Map<String, String> error = new HashMap<>();
+        error.put("NoSuchDataException", "email = newUser@new.com");
+        String response = objectMapper.writeValueAsString(error);
+
+        mockMvc.perform(post("/user/sign-in")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonString))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(response));
+    }
+
+    @Test
+    @DisplayName("User Sign-In | Fail : Wrong Password")
+    void signInFailPassword() throws Exception {
+        OriginalUserDto originalUserDto = getOriginalUserDto("1234");
+        userService.signUp(originalUserDto);
+
+        OriginalUserDto wrongUserDto = getOriginalUserDto("2222");
+        String jsonString = objectMapper.writeValueAsString(wrongUserDto);
+
+        Map<String, String> error = new HashMap<>();
+        error.put("NoSuchDataException", "password = 2222");
+        String response = objectMapper.writeValueAsString(error);
+
+        mockMvc.perform(post("/user/sign-in")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonString))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(response));
     }
 
     @Test
     @DisplayName("User Sign-In with Github | Success : Sign-Up")
     void signInSuccessUp() throws Exception {
-        GithubUserDto githubUserDto = GithubUserDto.builder()
-                .userDetails("newUser@new.com")
-                .identityProvider("github")
-                .build();
+        GithubUserDto githubUserDto = getGithubUserDto("github");
         String jsonString = objectMapper.writeValueAsString(githubUserDto);
 
         mockMvc.perform(post("/user/sign-in/github")
@@ -87,10 +127,7 @@ class UserControllerTest {
     @Test
     @DisplayName("User Sign-In with Github | Success : Sign-In")
     void signInSuccessIn() throws Exception {
-        GithubUserDto githubUserDto = GithubUserDto.builder()
-                .userDetails("newUser@new.com")
-                .identityProvider("github")
-                .build();
+        GithubUserDto githubUserDto = getGithubUserDto("github");
         userService.signInGithub(githubUserDto);
         String jsonString = objectMapper.writeValueAsString(githubUserDto);
 
@@ -98,5 +135,36 @@ class UserControllerTest {
                 .contentType(MediaType.APPLICATION_JSON)
                 .content(jsonString))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    @DisplayName("User Sign-In with Github | Fail : Invalid Req")
+    void signInFailInvalid() throws Exception {
+        GithubUserDto githubUserDto = getGithubUserDto("wrong");
+        String jsonString = objectMapper.writeValueAsString(githubUserDto);
+
+        Map<String, String> error = new HashMap<>();
+        error.put("InvalidReqBodyException", "IdentityProvider must be github");
+        String response = objectMapper.writeValueAsString(error);
+
+        mockMvc.perform(post("/user/sign-in/github")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(jsonString))
+                .andExpect(status().isBadRequest())
+                .andExpect(content().string(response));
+    }
+
+    private GithubUserDto getGithubUserDto(String provider) {
+        return GithubUserDto.builder()
+                .userDetails("newUser@new.com")
+                .identityProvider(provider)
+                .build();
+    }
+
+    private OriginalUserDto getOriginalUserDto(String password) {
+        return OriginalUserDto.builder()
+                .email("newUser@new.com")
+                .password(password)
+                .build();
     }
 }
