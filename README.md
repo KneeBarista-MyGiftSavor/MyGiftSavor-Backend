@@ -24,7 +24,7 @@
 +---main
 |   +---generated
 |   +---java
-|   |   \---hacklearn
+|   |   \---hackalearn
 |   |       \---mygiftsavor
 |   |           |   MyGiftSavorApplication.java
 |   |           |
@@ -81,7 +81,7 @@
 |       \---templates
 \---test
     \---java
-        \---hacklearn
+        \---hackalearn
             \---mygiftsavor
                 |   MyGiftSavorApplicationTests.java
                 |
