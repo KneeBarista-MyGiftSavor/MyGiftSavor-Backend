@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -14,6 +15,7 @@ import java.util.List;
 
 import static hackalearn.mygiftsavor.module.model.dto.GifticonDtos.*;
 
+@CrossOrigin(origins = "*", maxAge = 3600)
 @Slf4j
 @RequiredArgsConstructor
 @RestController
